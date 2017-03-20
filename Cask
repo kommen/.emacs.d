@@ -29,7 +29,6 @@
 (depends-on "pkg-info")
 (depends-on "projectile")
 (depends-on "queue")
-(depends-on "rainbow-mode")
 (depends-on "s")
 (depends-on "sass-mode")
 (depends-on "seq")
