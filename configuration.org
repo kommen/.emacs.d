@@ -1,3 +1,21 @@
+* Core Emacs
+#+BEGIN_SRC emacs-lisp
+  (server-start)
+
+  (setq gc-cons-threshold 50000000)
+  (setq vc-handled-backends nil)
+
+  (tool-bar-mode -1)
+  (global-linum-mode 1)
+
+  (load-theme 'material t)
+
+  (global-auto-revert-mode t)
+
+#+END_SRC
+
+#+RESULTS:
+
 * Package Management
 This configuration assumes that you installed cask via homebrew.
 If you installed cask via curl you might need to change the past to “~/.cask/cask.el”.\ In order to install cask and pallet follow the Installation section on https://github.com/rdallasgray/pallet.
@@ -27,8 +45,11 @@ Run `cask install` to install required packages
 
 * Tabs
 #+BEGIN_SRC emacs-lisp
-
+  (setq js-indent-level 2)
 #+END_SRC
+
+#+RESULTS:
+: 2
 
 * Projectile
 
@@ -88,9 +109,6 @@ You can use C-c left or C-c right to switch to the prev or next window configura
 * The Mess
 
 #+BEGIN_SRC emacs-lisp
-
-  (server-start)
-
   (require 'company)
   (add-hook 'after-init-hook 'global-company-mode)
 
@@ -118,12 +136,6 @@ You can use C-c left or C-c right to switch to the prev or next window configura
 
   (global-set-key (kbd "C-x C-r") 'rename-current-buffer-file)
 
-  (tool-bar-mode -1)
-  (global-linum-mode 1)
-
-  (load-theme 'material t)
-
-  (global-auto-revert-mode t)
 
   (defun save-all ()
     (interactive)
