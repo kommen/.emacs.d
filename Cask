@@ -24,7 +24,7 @@
 (depends-on "material-theme")
 (depends-on "neotree")
 (depends-on "package-build")
-(depends-on "pallet")
+
 (depends-on "parinfer")
 (depends-on "pkg-info")
 (depends-on "projectile")
