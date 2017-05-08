@@ -295,3 +295,22 @@ For more information see https://github.com/abo-abo/swiper
   (use-package swiper
     :bind ("C-s" . swiper))
 #+END_SRC
+* Clojure customizations
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'clojure-mode-hook
+                  (lambda () (add-to-list 'write-file-functions 'delete-trailing-whitespace)))
+
+  (defun cljfmt-region (pmin pmax)
+    (interactive "r")
+    (call-process-region pmin pmax
+                             "cljfmt"
+                             t t))
+
+  (defun cljfmt-buffer ()
+    (interactive)
+    (cljfmt-region (point-min) (point-max)))
+
+#+END_SRC
+
+#+RESULTS:
+: cljfmt-buffer
