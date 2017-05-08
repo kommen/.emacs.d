@@ -28,9 +28,7 @@ Run `cask install` to install required packages
 #+BEGIN_SRC emacs-lisp
   (require 'cask "/usr/local/Cellar/cask/0.8.1/cask.el")
   (cask-initialize)
-  (require 'pallet)
-  (pallet-mode t)
-
+  
   (require 'package)
   (add-to-list 'package-archives
                '("melpa" . "http://melpa.org/packages/") t)
