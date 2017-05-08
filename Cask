@@ -2,6 +2,7 @@
 (source "melpa" "http://melpa.org/packages/")
 
 (depends-on "ag")
+(depends-on "alchemist")
 (depends-on "bind-key")
 (depends-on "cask")
 (depends-on "clojure-mode")
@@ -24,7 +25,6 @@
 (depends-on "material-theme")
 (depends-on "neotree")
 (depends-on "package-build")
-
 (depends-on "parinfer")
 (depends-on "pkg-info")
 (depends-on "projectile")

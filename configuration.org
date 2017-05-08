@@ -312,3 +312,10 @@ For more information see https://github.com/abo-abo/swiper
 
 #+RESULTS:
 : cljfmt-buffer
+* Elixir
+#+BEGIN_SRC emacs-lisp
+(use-package alchemist)
+#+END_SRC
+
+#+RESULTS:
+
