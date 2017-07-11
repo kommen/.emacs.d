@@ -189,14 +189,6 @@ You can use C-c left or C-c right to switch to the prev or next window configura
 
   (add-hook 'clojure-mode-hook #'smartparens-strict-mode)
   (add-hook 'clojure-mode-hook #'dumb-jump-mode)
-  (add-hook 'clojure-mode-hook #'inf-clojure-minor-mode)
-
-  
-  (setq inf-clojure-program "boot -C repl -c")
-  (defun run-boot-repl (x)
-    (interactive "sEnter Port Number:")
-    (run-clojure (format  "boot -C repl -cp %s" x)))
-
 
   (global-set-key (kbd "M-x") 'counsel-M-x)
 
@@ -295,6 +287,11 @@ For more information see https://github.com/abo-abo/swiper
 #+END_SRC
 * Clojure customizations
 #+BEGIN_SRC emacs-lisp
+
+  (use-package cider
+    :ensure t)
+
+
   (add-hook 'clojure-mode-hook
                   (lambda () (add-to-list 'write-file-functions 'delete-trailing-whitespace)))
 

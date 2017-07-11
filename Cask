@@ -18,7 +18,7 @@
 (depends-on "exec-path-from-shell")
 (depends-on "f")
 (depends-on "guide-key")
-(depends-on "inf-clojure")
+(depends-on "cider")
 (depends-on "ivy")
 (depends-on "magit")
 (depends-on "markdown-mode+")
