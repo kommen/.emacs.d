@@ -129,8 +129,8 @@ This predicate is only tested on \"insert\" action."
 (sp-with-modes sp--lisp-modes
   (sp-local-pair "(" nil
                  :wrap "C-("
-                 :pre-handlers '(my-add-space-before-sexp-insertion)
-                 :post-handlers '(my-add-space-after-sexp-insertion)))
+                 :pre-handlers '(my-add-space-before-sexp-insertion)))
+;;:post-handlers '(my-add-space-after-sexp-insertion)))
 
 
 
@@ -184,4 +184,3 @@ This predicate is only tested on \"insert\" action."
       (insert "* ")))
     (let ((o (sp--get-active-overlay)))
       (indent-region (overlay-start o) (overlay-end o)))))
-      

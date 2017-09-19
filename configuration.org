@@ -8,13 +8,25 @@
   (tool-bar-mode -1)
   (global-linum-mode 1)
 
+  (global-eldoc-mode -1)
+  (global-company-mode -1)
+
   (load-theme 'material t)
 
   (global-auto-revert-mode t)
 
+  (when (memq window-system '(mac ns))
+    (exec-path-from-shell-initialize)
+    (setq mac-option-modifier 'super)
+    (setq mac-command-modifier 'meta))
+
+
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil)))
+(setq mouse-wheel-progressive-speed 3)
 #+END_SRC
 
 #+RESULTS:
+: meta
 
 * Package Management
 This configuration assumes that you installed cask via homebrew.
@@ -28,7 +40,7 @@ Run `cask install` to install required packages
 #+BEGIN_SRC emacs-lisp
   (require 'cask "/usr/local/Cellar/cask/0.8.1/cask.el")
   (cask-initialize)
-  
+
   (require 'package)
   (add-to-list 'package-archives
                '("melpa" . "http://melpa.org/packages/") t)
@@ -110,11 +122,6 @@ You can use C-c left or C-c right to switch to the prev or next window configura
   (require 'company)
   (add-hook 'after-init-hook 'global-company-mode)
 
-  (when (memq window-system '(mac ns))
-    (exec-path-from-shell-initialize)
-    (setq mac-option-modifier 'super)
-    (setq mac-command-modifier 'meta))
-
   (defun rename-current-buffer-file ()
     "Renames current buffer and file it is visiting."
     (interactive)
@@ -158,7 +165,7 @@ You can use C-c left or C-c right to switch to the prev or next window configura
       (switch-to-buffer -buf)
       (funcall initial-major-mode)
       (setq buffer-offer-save t)))
-   
+
     (global-set-key (kbd "C-x n") 'kommen-new-empty-buffer)
 
   (use-package parinfer
@@ -173,7 +180,7 @@ You can use C-c left or C-c right to switch to the prev or next window configura
               smart-tab      ; C-b & C-f jump positions and smart shift with tab & S-tab.
               smart-yank))   ; Yank behavior depend on mode.
       (add-hook 'clojure-mode-hook #'parinfer-mode)
-      
+
       (add-hook 'emacs-lisp-mode-hook #'parinfer-mode)
      (setq parinfer-auto-switch-indent-mode nil)))
 
@@ -203,7 +210,6 @@ You can use C-c left or C-c right to switch to the prev or next window configura
 
   (setq neo-smart-open 1)
 
-  (global-set-key (kbd "C-x g") 'magit-status)
   (winner-mode t)
 
   ;; custom themes
@@ -220,7 +226,7 @@ You can use C-c left or C-c right to switch to the prev or next window configura
 #+RESULTS:
 | smartparens-strict-mode |
 
-  
+
 ** Packages
 #+BEGIN_SRC emacs-lisp
   (use-package guide-key
@@ -291,6 +297,16 @@ For more information see https://github.com/abo-abo/swiper
   (use-package cider
     :ensure t)
 
+  (use-package ac-cider)
+
+
+  (add-hook 'cider-mode-hook 'ac-flyspell-workaround)
+  (add-hook 'cider-mode-hook 'ac-cider-setup)
+  (add-hook 'cider-repl-mode-hook 'ac-cider-setup)
+  (eval-after-load "auto-complete"
+    '(progn
+       (add-to-list 'ac-modes 'cider-mode)
+       (add-to-list 'ac-modes 'cider-repl-mode)))
 
   (add-hook 'clojure-mode-hook
                   (lambda () (add-to-list 'write-file-functions 'delete-trailing-whitespace)))
@@ -308,11 +324,88 @@ For more information see https://github.com/abo-abo/swiper
 #+END_SRC
 
 #+RESULTS:
-: cljfmt-buffer
-* Elixir
+=cljfmt-buffer
+=* Elixir
 #+BEGIN_SRC emacs-lisp
 (use-package alchemist)
 #+END_SRC
 
 #+RESULTS:
 
+* Magit
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-x g") 'magit-status)
+  (setq magit-save-repository-buffers t)
+#+END_SRC
+
+#+RESULTS:
+: t
+
+* Git Timemachine
+#+BEGIN_SRC emacs-lisp
+  (use-package git-timemachine)
+#+END_SRC
+
+#+RESULTS:
+* Java
+#+BEGIN_SRC emacs-lisp
+    ;;; c mode configuration
+    (defconst kommen-c-style
+      '((c-tab-always-indent        . t)
+        (c-basic-offset . 2)
+        (c-ignore-auto-fill . nil)
+        (c-comment-only-line-offset . (0 . 0))
+        (c-hanging-braces-alist     . ((substatement-open after before)
+                                       (brace-list-open)))
+        (c-hanging-colons-alist     . ((member-init-intro before)
+                                       (inher-intro)
+                                       (case-label after)
+                                       (label after)
+                                       (access-label after)))
+        (c-cleanup-list             . (scope-operator
+                                       empty-defun-braces
+                                       defun-close-semi))
+        (c-offsets-alist . ((knr-argdecl-intro . 5)
+                            (arglist-intro . ++)
+                            (arglist-close . c-lineup-close-paren)
+                            (inclass . +)
+                            (member-init-intro . +)
+                            (statement-block-intro . +)
+                            (defun-block-intro . +)
+                            (substatement-open . 0)
+                            (label . 0)
+                            (statement-case-open . +)
+                            (statement-case-intro . +)
+                            (case-label . 0)
+                            (statement-cont . c-lineup-math)
+                            (inline-open . 0)
+                            (brace-list-open . +)
+                            (topmost-intro-cont . 0)
+                            (c . 1) ; "c" for continue of comment, not "c
+                                    ; programming language"
+                            ))
+        (c-special-indent-hook . c-gnu-impose-minimum)
+        (c-block-comment-prefix . "lgf: ")
+        (c-comment-prefix-regexp . ((awk-mode . "#+(lgf: )?")
+                                    (other ."lgf: \\|//+\\|\\**")))
+        ;; go to this file and test if c block comments works
+        ;; [[file:./patches/comments-test.c]]
+        (c-echo-syntactic-information-p . t))
+      "kommen's C/Java Programming Style")
+    (c-add-style "kommen" kommen-c-style nil)
+
+  (add-hook 'java-mode-hook
+                             (lambda ()
+                                   (c-set-style "kommen")
+                                   (c-toggle-hungry-state 1)
+                                   (hs-minor-mode 1)
+                                   (turn-on-cwarn-mode)
+                                   (indent-tabs-mode nil)))
+
+
+#+END_SRC
+
+#+RESULTS:
+| lambda | nil | (c-set-style kommen)                                   | (c-toggle-hungry-state 1) | (hs-minor-mode 1) | (turn-on-cwarn-mode) | (indent-tabs-mode nil) |
+| lambda | nil | (c-set-style lgfang)                                   | (c-toggle-hungry-state 1) | (hs-minor-mode 1) | (turn-on-cwarn-mode) |                        |
+| lambda | nil | (setq c-basic-offset 2 tab-width 2 indent-tabs-mode t) |                           |                   |                      |                        |
