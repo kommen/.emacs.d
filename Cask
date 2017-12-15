@@ -30,7 +30,6 @@
 (depends-on "projectile")
 (depends-on "queue")
 (depends-on "s")
-(depends-on "sass-mode")
 (depends-on "seq")
 (depends-on "shut-up")
 (depends-on "smartparens")
