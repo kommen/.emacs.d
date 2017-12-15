@@ -308,14 +308,25 @@ For more information see https://github.com/abo-abo/swiper
        (add-to-list 'ac-modes 'cider-mode)
        (add-to-list 'ac-modes 'cider-repl-mode)))
 
-  (add-hook 'clojure-mode-hook
-                  (lambda () (add-to-list 'write-file-functions 'delete-trailing-whitespace)))
+  (defun nj-format-buffer ()
+    (interactive)
+    (let ((old-point (point))) 
+      (cider-format-buffer) 
+      (goto-char old-point)))
+
+
+  (defun nj-format-clojure-buffer-hook ()
+    (add-hook 'before-save-hook 'nj-format-buffer nil 't))
+      
+      
+  ;(add-hook 'clojure-mode-hook
+  ;          'nj-format-clojure-buffer-hook)
 
   (defun cljfmt-region (pmin pmax)
     (interactive "r")
     (call-process-region pmin pmax
-                             "cljfmt"
-                             t t))
+                         "~/work/nextjournal.com/bin/zprint"
+                         t t))
 
   (defun cljfmt-buffer ()
     (interactive)
