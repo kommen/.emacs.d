@@ -15,6 +15,8 @@
 (depends-on "dracula-theme")
 (depends-on "dumb-jump")
 (depends-on "epl")
+(depends-on "evil")
+(depends-on "evil-cleverparens")
 (depends-on "exec-path-from-shell")
 (depends-on "f")
 (depends-on "guide-key")
