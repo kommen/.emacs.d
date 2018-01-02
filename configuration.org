@@ -275,7 +275,7 @@ See the full list at https://github.com/ericdanan/counsel-projectile
   (use-package counsel-projectile
     :defer 2
     :config
-    (counsel-projectile-on))
+    (counsel-projectile-mode))
 #+END_SRC
 *** Counsel OSX App
 With ~counsel-osx-app~ you can start macOS Applications from within emacs using M-x counsel-osx-app.
