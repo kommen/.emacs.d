@@ -45,6 +45,7 @@ Run `cask install` to install required packages
     (setq mac-option-modifier 'super)
     (setq mac-command-modifier 'meta))
 
+  (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil)))
 (setq mouse-wheel-progressive-speed 3)
