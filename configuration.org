@@ -348,8 +348,10 @@ For more information see https://github.com/abo-abo/swiper
 
 * Magit
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-x g") 'magit-status)
-  (setq magit-save-repository-buffers t)
+  (use-package magit
+    :config
+    (global-set-key (kbd "C-x g") 'magit-status)
+    (setq magit-save-repository-buffers t))
 #+END_SRC
 
 #+RESULTS:
