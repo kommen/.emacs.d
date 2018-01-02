@@ -296,8 +296,10 @@ For more information see https://github.com/abo-abo/swiper
 #+BEGIN_SRC emacs-lisp
 
   (use-package cider
-    :ensure t)
-
+    :ensure t
+    :config
+    (setq cider-repl-display-help-banner nil))
+    
   (use-package ac-cider)
 
 
