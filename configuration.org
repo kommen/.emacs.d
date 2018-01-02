@@ -425,3 +425,34 @@ For more information see https://github.com/abo-abo/swiper
 | lambda | nil | (c-set-style kommen)                                   | (c-toggle-hungry-state 1) | (hs-minor-mode 1) | (turn-on-cwarn-mode) | (indent-tabs-mode nil) |
 | lambda | nil | (c-set-style lgfang)                                   | (c-toggle-hungry-state 1) | (hs-minor-mode 1) | (turn-on-cwarn-mode) |                        |
 | lambda | nil | (setq c-basic-offset 2 tab-width 2 indent-tabs-mode t) |                           |                   |                      |                        |
+* Evil Mode
+ #+BEGIN_SRC emacs-lisp
+   (use-package
+     evil
+     :config
+     (evil-mode)
+     (setq evil-move-cursor-back nil)
+     (use-package evil-cleverparens
+       :config
+       (add-hook 'clojure-mode-hook #'evil-cleverparens-mode)
+       (add-hook 'emacs-lisp-mode-hook #'evil-cleverparens-mode)
+       (global-set-key (kbd "M-t") 'counsel-projectile)))
+
+   (eval-when-compile (require 'cl)) ;; for `lexical-let' macro
+   (lexical-let ((default-color (cons (face-background 'mode-line)
+                                      (face-foreground 'mode-line))))
+     (add-hook 'post-command-hook
+               (lambda ()
+                 (let ((color (cond ((minibufferp) default-color)
+                                    ((evil-insert-state-p) '("#006fa0" . "#ffffff"))
+                                    ((evil-emacs-state-p)  '("#444488" . "#ffffff"))
+                                    (t default-color))))
+                   (set-face-background 'mode-line (car color))
+                   (set-face-foreground 'mode-line (cdr color))))))
+
+
+
+#+END_SRC
+
+  
+ 
