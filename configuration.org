@@ -8,7 +8,7 @@ Now just start emacs and you’re all set.\ Every package you will install via p
 Run `cask install` to install required packages
 
 #+BEGIN_SRC emacs-lisp
-  (require 'cask "/usr/local/Cellar/cask/0.8.1/cask.el")
+  (require 'cask "/usr/local/Cellar/cask/0.8.1_1/cask.el")
   (cask-initialize)
 
   (require 'package)
@@ -69,7 +69,7 @@ Run `cask install` to install required packages
 
   (add-to-list 'projectile-globally-ignored-directories "*/priv")
   (setq projectile-switch-project-action 'neotree-projectile-action)
-  (global-set-key (kbd "M-t") 'projectile-find-file)
+  (global-set-key (kbd "M-r") 'counsel-projectile)
   (setq projectile-enable-caching t)
   (projectile-global-mode)
 
@@ -311,34 +311,18 @@ For more information see https://github.com/abo-abo/swiper
        (add-to-list 'ac-modes 'cider-mode)
        (add-to-list 'ac-modes 'cider-repl-mode)))
 
-  (defun nj-format-buffer ()
-    (interactive)
-    (let ((old-point (point))) 
-      (cider-format-buffer) 
-      (goto-char old-point)))
-
-
   (defun nj-format-clojure-buffer-hook ()
-    (add-hook 'before-save-hook 'nj-format-buffer nil 't))
-      
-      
-  ;(add-hook 'clojure-mode-hook
-  ;          'nj-format-clojure-buffer-hook)
+    (add-hook 'before-save-hook 'cider-format-buffer nil 't))
 
-  (defun cljfmt-region (pmin pmax)
-    (interactive "r")
-    (call-process-region pmin pmax
-                         "~/work/nextjournal.com/bin/zprint"
-                         t t))
-
-  (defun cljfmt-buffer ()
-    (interactive)
-    (cljfmt-region (point-min) (point-max)))
+;  (add-hook 'clojure-mode-hook
+;            'nj-format-clojure-buffer-hook)
 
 #+END_SRC
 
 #+RESULTS:
+| nj-format-clojure-buffer-hook | cider-mode | evil-smartparens-mode | clojure--check-wrong-major-mode | dumb-jump-mode | smartparens-strict-mode | parinfer-mode |
 =cljfmt-buffer
+==cljfmt-buffer
 =* Elixir
 #+BEGIN_SRC emacs-lisp
 (use-package alchemist)
@@ -431,28 +415,91 @@ For more information see https://github.com/abo-abo/swiper
      evil
      :config
      (evil-mode)
-     (setq evil-move-cursor-back nil)
-     (use-package evil-cleverparens
-       :config
-       (add-hook 'clojure-mode-hook #'evil-cleverparens-mode)
-       (add-hook 'emacs-lisp-mode-hook #'evil-cleverparens-mode)
-       (global-set-key (kbd "M-t") 'counsel-projectile)))
+     (evil-set-initial-state 'cider-repl-mode 'emacs)
+     (evil-set-initial-state 'cider-tmp 'emacs)
+     (setq evil-move-cursor-back nil))
+
+   (use-package evil-surround
+     :ensure t
+     :config
+     (global-evil-surround-mode 1))
+
+   ;; (use-package evil-cleverparens
+   ;;   :config
+   ;;   (add-hook 'clojure-mode-hook #'evil-cleverparens-mode)
+   ;;   (add-hook 'emacs-lisp-mode-hook #'evil-cleverparens-mode)
+   ;;   (global-set-key (kbd "M-t") 'counsel-projectile))
+
+   (use-package evil-smartparens
+     :ensure t
+     :config
+     (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode))
+
+   (use-package general
+     :ensure t
+     :config
+     (setq general-default-keymaps 'evil-normal-state-map))
 
    (eval-when-compile (require 'cl)) ;; for `lexical-let' macro
-   (lexical-let ((default-color (cons (face-background 'mode-line)
-                                      (face-foreground 'mode-line))))
-     (add-hook 'post-command-hook
-               (lambda ()
-                 (let ((color (cond ((minibufferp) default-color)
-                                    ((evil-insert-state-p) '("#006fa0" . "#ffffff"))
-                                    ((evil-emacs-state-p)  '("#444488" . "#ffffff"))
-                                    (t default-color))))
-                   (set-face-background 'mode-line (car color))
-                   (set-face-foreground 'mode-line (cdr color))))))
 
+   (defun kommen-set-mode-line-color ()  
+     (let ((default-color (cons (face-background 'mode-line)
+                                (face-foreground 'mode-line))))
+       (let ((color (cond 
+                          ((eq evil-next-state 'insert) '("#006fa0" . "#ffffff"))
+                          ((eq evil-next-state 'emacs)  '("#444488" . "#ffffff"))
+                          (t default-color))))
+         (set-face-background 'mode-line (car color))
+         (set-face-foreground 'mode-line (cdr color)))))
 
-
+   ;; (add-hook 'evil-insert-state-entry-hook 'kommen-set-mode-line-color)
+   ;; (add-hook 'evil-emacs-state-entry-hook 'kommen-set-mode-line-color)
+   ;; (
+   ;; add-hook 'evil-normal-state-entry-hook 'kommen-set-mode-line-color)
 #+END_SRC
+
+ #+RESULTS:
+ | kommen-set-mode-line-color |
 
   
  
+* Evil keybindings
+#+BEGIN_SRC emacs-lisp
+  (general-evil-setup)
+
+  (general-nmap "SPC" (general-simulate-keys "C-c"))
+
+  (general-nmap :prefix ","
+                :prefix-command 'kommen-prefix-map
+                "g" 'magit-status
+                "," 'counsel-projectile
+                "x3" 'split-window-right
+                "x0" 'delete-window) 
+
+  (general-imap ","
+                (general-key-dispatch 'self-insert-command
+                  :timeout 0.2
+                  :inherit-keymap kommen-prefix-map
+                  :name comma-pre)
+
+                "C-u" 'undo-tree-undo
+                "M-u" 'undo-tree-redo
+                
+                "j"
+                (general-key-dispatch 'self-insert-command
+                  :timeout 0.1
+                  :name j-pre
+                  "k" 'evil-normal-state)
+
+                "s"
+                (general-key-dispatch 'self-insert-command
+                  :timeout 0.2
+                  :name s-pre
+                  "j" 'sp-down-sexp
+                  "k" 'sp-up-sexp
+                  "h" 'sp-previous-sexp
+                  "l" 'sp-next-sexp)) 
+#+END_SRC
+
+#+RESULTS:
+
